@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Discord list of links to copy character Templates
+"""List all files in Google Drive Folder
 
-Given the ID of a Google Drive folder, this will list all the files in it as a list of links,
-on the format * [<name>](drive_link/copy) into template-links.txt
+Given the URL of a Google Drive folder, this will list all the files in it, with options
 """
 
 import argparse
@@ -19,7 +18,7 @@ VERSION = os.environ.get('VERSION')
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(
-        prog="DriveLinks",
+        prog="DriveLS",
         description="A script that creates a list of all the files in any given Google Drive Folder."
     )
     parser.add_argument('google_folder_url', help="Link to the folder, gotten via 'Share => Copy link'.")
