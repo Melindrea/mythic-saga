@@ -93,7 +93,7 @@ class DriveService:
 
 
 @dataclass
-class SheetService:
+class SpreadSheetService:
     dir_path: Path
 
     def __post_init__(self):

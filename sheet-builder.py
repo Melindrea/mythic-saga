@@ -15,7 +15,7 @@ from dotenv import load_dotenv, find_dotenv
 from argparse import ArgumentParser
 
 from classes import SheetInformation
-from controller import create_connections
+from controller import SheetController
 import arg_parser
 from helpers import get_valid_date, trim_and_split_string
 
@@ -24,8 +24,8 @@ VERSION = os.environ.get('VERSION')
 # This removes any blankspaces and capitalization
 GAMES = list(map(lambda game: game.strip().lower(), os.environ.get('GAMES').split(',')))
 
-def validate_arguments(args: SheetInformation) -> list[str]:
-    if args.override:
+def validate_arguments(args: SheetInformation, override: bool = False) -> list[str]:
+    if override:
         return []
     
     errors = []
@@ -44,19 +44,20 @@ def validate_arguments(args: SheetInformation) -> list[str]:
 
     return errors
 
+def create_connection(info: SheetInformation, is_verbose: bool = False, is_dry_run: bool = False):
+    con = SheetController(info=info, is_verbose=is_verbose, is_dry_run=is_dry_run)
+    con.initiate()
+    
 
 def cli_func(parser: ArgumentParser) -> None:
     sh = SheetInformation()
     parser.parse_args(namespace=sh)
     
-    errors = validate_arguments(sh)
+    errors = validate_arguments(sh, sh.override)
     if errors:
         parser.error('\n'.join(errors))
     
-    if sh.dry_run:
-        print(sh)
-    else:
-        create_connections(sh)
+    create_connection(sh, sh.verbose, sh.dry_run)
 
 
 def file_func(parser: ArgumentParser) -> None:
@@ -89,40 +90,15 @@ def file_func(parser: ArgumentParser) -> None:
                 email=row['email'].strip().lower(),
                 callings=callings
             )
-            errors = validate_arguments(character)
+            errors = validate_arguments(character, args.override)
             if errors:
                 parser.error(f'Row with sheet ID {row['sheet_id']} invalid:' + '\n'.join(errors))
 
             characters.append(character)
 
     for character in characters:
-        if args.dry_run:
-            print(character)
-        else:
-            create_connections(character)
+        create_connection(character, args.verbose, args.dry_run)
 
-
-    """
-    errors = validate_arguments(sh)
-    if errors:
-        parser.error('\n'.join(errors))
-    game: str = ""
-    sheet_id: str = ""
-    sheet_url: str = ""
-    name: str = ""
-    storyteller: str = ""
-    email: str = ""
-    verbose: bool = ""
-    override: bool = ""
-    callings: list[int] = field(default_factory=list)
-    sanction_date: datetime = datetime.now()
-    masterlist_id: str = ""
-    masterlist_url: str = ""
-    player_sheet_id: str = None
-    st_sheet_id: str = None
-    update_player_sheet: bool = True
-    update_st_sheet: bool = True
-    """
 
 
 def main():

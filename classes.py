@@ -12,20 +12,18 @@ class SheetInformation:
     name: str = ""
     storyteller: str = ""
     email: str = ""
-    verbose: bool = ""
-    override: bool = ""
     callings: list[str] = field(default_factory=list)
     sanction_date: datetime = datetime.now()
     masterlist_id: str = ""
     masterlist_url: str = ""
     player_sheet_id: str = None
+    player_sheet_url: str = None
     st_sheet_id: str = None
+    st_sheet_url: str = None
     update_player_sheet: bool = True
     update_st_sheet: bool = True
     
     def __str__(self) -> str:
-        verbose = 'yes' if self.verbose else 'no'
-        override = 'yes' if self.override else 'no'
         lines = [
             f"Game = {self.game}",
             f"Sheet ID = {self.sheet_id}",
@@ -33,8 +31,6 @@ class SheetInformation:
             f"Name = {self.name}",
             f"Storyteller = {self.storyteller}",
             f"Email = {self.email}",
-            f"Verbose = {verbose}",
-            f"Override validation = {override}",
             f"Callings = {', '.join(self.callings)}",
             f"Sanctioning Date = {self.get_formatted_sanction_date()}",
             f"Game Masterlist ID = {self.masterlist_id}",
@@ -54,6 +50,9 @@ class SheetInformation:
         except AttributeError:
             return True # No need to check the formats if the sanction date isn't overriden        
         
+        if self.given_sanctioned_date is None:
+            return True
+
         datetime_object = get_valid_date(self.given_sanctioned_date)
         
         if datetime_object:

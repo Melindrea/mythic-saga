@@ -40,7 +40,5 @@ def cli(
     parser.add_argument('-c', '--callings', metavar=('Calling1', 'Calling2', 'Calling3'), nargs=3, help="Three callings. Required in case of Scion.", required=False)
     parser.add_argument('-ps', '--player_sheet_id', required=False, help="If a Player Spreadsheet is already created put the ID here.")
     parser.add_argument('-sts', '--st_sheet-id', required=False, help="If an ST Spreadsheet is already created put the ID here.")
-    parser.add_argument('-ups', '--update_player_sheet', action='store_false', help="If the player spreadsheet should not be updated, activate this flag.")
-    parser.add_argument('-usts', '--update_st_sheet', action='store_false', help="If the ST spreadsheet should not be updated, activate this flag.")
         
 
