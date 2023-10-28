@@ -1,5 +1,24 @@
+from datetime import datetime
 import os
+import re
 from urllib.parse import parse_qs, quote, urlparse
+
+def trim_and_split_string(string: str, delims: str = '[,.\\-\\%\\s]') -> list[str]:
+    return list(filter(lambda x: x.strip() != '', re.split(delims, string)))
+
+def get_valid_date(date: str) -> datetime:
+    datetime_object = None
+    formats = ['%m/%d/%y', '%m/%d/%Y', '%Y-%m-%d']
+    for format in formats:
+        try:
+            datetime_object = datetime.strptime(date, format)
+        except ValueError:
+            pass # Left empty on purpose
+        else:
+            # No exception means we've found a valid format
+            break
+
+    return datetime_object
 
 
 def build_url(type: str, id: str, action: str = None) -> str:

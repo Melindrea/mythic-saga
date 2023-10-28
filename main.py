@@ -1,20 +1,24 @@
 import json
-
+import re
 from pathlib import Path
 
 from service import get_service_object
 
+def trim_and_split(string: str, delims: str = '[,.\\-\\%\\s]') -> list[str]:
+    return list(filter(lambda x: x.strip() != '', re.split(delims, string)))
+    
 def main():
-    with open('discord.txt', 'w') as f:
-        lines = [
-            '** QUICK LINKS **',
-            f'Character sheet: info.sheet_url',
-            f'Request sheet: player_sheet_url',
-            f'ST spreadsheet (view-only): st_sheet_url',
-        #   f'Wiki: {wiki_link}') # HERE BE DRAGONS
-            f'Connecting e-mail: info.email'
-        ]
-        print('\n\n'.join(lines), file=f)
+    callings1 = 'calling1,calling2,calling3'
+    callings2 = 'calling1, calling2, calling3'
+    callings3 = 'calling1 calling2 calling3'
+
+    print(trim_and_split(callings1))
+    print(trim_and_split(callings2))
+    print(trim_and_split(callings3))
+    #delims = '[,.\-\%\s]'
+    #print(re.split(delims, callings1))
+    #print(re.split(delims, callings2))
+    #print(re.split(delims, callings3))
     
 
 if __name__ == "__main__":

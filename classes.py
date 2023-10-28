@@ -2,6 +2,8 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 
+from helpers import get_valid_date
+
 @dataclass
 class SheetInformation:
     game: str = ""
@@ -12,7 +14,7 @@ class SheetInformation:
     email: str = ""
     verbose: bool = ""
     override: bool = ""
-    callings: list[int] = field(default_factory=list)
+    callings: list[str] = field(default_factory=list)
     sanction_date: datetime = datetime.now()
     masterlist_id: str = ""
     masterlist_url: str = ""
@@ -47,48 +49,41 @@ class SheetInformation:
         return '\n'.join(lines)
 
     def proper_sanctioned_date(self) -> bool:
-        if not self.given_sanctioned_date:
-            return True # No need to check the formats if the sanction date isn't overriden
+        try:
+            self.given_sanctioned_date
+        except AttributeError:
+            return True # No need to check the formats if the sanction date isn't overriden        
         
-        datetime_object = None
-        formats = ['%m/%d/%y', '%m/%d/%Y', '%Y-%m-%d']
-        for format in formats:
-            try:
-                datetime_object = datetime.strptime(self.given_sanctioned_date, format)
-            except ValueError:
-                pass # Left empty on purpose
-            else:
-                # No exception means we've found a valid format
-                break    
-    
+        datetime_object = get_valid_date(self.given_sanctioned_date)
+        
         if datetime_object:
             self.sanction_date = datetime_object
             return True
         
         return False
 
-    def check_sanction_date(self) -> None:
-        if not self.given_sanctioned_date:
-            return # No override, no need to check format
-
-        
-
-
-
+    
     def get_formatted_sanction_date(self, format: str = '%m/%d/%Y') -> str:
         return self.sanction_date.strftime(format)
 
-    def get_wrapped_callings(self) -> dict:
+    def get_wrapped_callings(self) -> list:
         return list(map(lambda calling: [calling], self.callings))
 
+    
     def email_is_valid(self) -> bool:
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
         
         return re.match(regex, self.email)
     
 
+    def valid_storyteller(self) -> bool:
+        if self.storyteller:
+            return True
+        
+        return False
+
     def callings_defined(self) -> bool:
-        if self.game == 'scion' and self.callings is None:
+        if self.game == 'scion' and (len(self.callings) < 3 or self.callings is None):
             return False
         
         return True
