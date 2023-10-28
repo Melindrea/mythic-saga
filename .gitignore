@@ -1,2 +1,8 @@
-*.json
+credentials.json
+token.json
 .ipynb_checkpoints
+.vscode
+__pycache__
+.env
+discord.txt
+template-links.txt
