@@ -44,6 +44,14 @@ class SheetInformation:
 
         return '\n'.join(lines)
 
+    def get(self, attr: str):
+        # Allows you to get the value of an attribute using variables
+        return getattr(self, attr)
+    
+    def set(self, attr: str, value):
+        # Allows you to set the value of an attribute using variables
+        setattr(self, attr, value)
+
     def proper_sanctioned_date(self) -> bool:
         try:
             self.given_sanctioned_date

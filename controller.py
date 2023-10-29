@@ -72,46 +72,40 @@ class SheetController:
 
 
     def create_spreadsheets(self, information: dict) -> None:
-        if self.info.st_sheet_id is None:
-            if self.is_dry_run:
-                print("Dry Run: Creating new ST sheet")
-                self.info.st_sheet_id = "DryRunSTID"
-            else:
-                print("Creating new ST sheet")
-                self.info.st_sheet_id = self.drive_service.copy(
-                    id=information.get('st').get('id'),
-                    parent=information.get('character_folder').get('id'),
-                    name=information.get('st').get('filename')
-                )
-                if self.is_verbose:
-                    print(f"New ST Spreadsheet has ID = {self.info.st_sheet_id}")
-        else:
-            print(f"Using existing ST Spreadsheet with ID = {self.info.st_sheet_id}")
-        
-        if self.info.player_sheet_id is None:
-            if self.is_dry_run:
-                print("Dry Run: Creating new player sheet")
-                self.info.player_sheet_id = "DryRunPlayerID"
-            else:
-                print("Creating new player sheet")
-                self.info.player_sheet_id = self.drive_service.copy(
-                    id=information.get('player').get('id'),
-                    parent=information.get('character_folder').get('id'),
-                    name=information.get('player').get('filename')
-                )
-                if self.is_verbose:
-                    print(f"New Player Spreadsheet has ID = {self.info.player_sheet_id}")
-        else:
-            print(f"Using existing Player Spreadsheet with ID = {self.info.player_sheet_id}")
-        
+        spreadsheets = [
+            ('st', 'ST'),
+            ('player', 'Player')
+        ]
 
-        self.info.player_sheet_url = build_url('spreadsheets', self.info.player_sheet_id)
-        self.info.st_sheet_url = build_url('spreadsheets', self.info.st_sheet_id)
-        if self.is_verbose:
-            print(f'Player sheet URL: {self.info.player_sheet_url}, ST sheet URL: {self.info.st_sheet_url}')
+        for spreadsheet in spreadsheets:
+            id = f'{spreadsheet[0]}_sheet_id'
+            id_value = self.info.get(id)
+
+            if id_value is None:
+                if self.is_dry_run:
+                    print(f"Dry Run: Creating new {spreadsheet[1]} spreadsheet")
+                    self.info.set(id, f'DryRun{spreadsheet[0]}ID')
+                    print('ID: ' + information.get(spreadsheet[0]).get('id'))
+                    print('Parent: ' + information.get('character_folder').get('id'))
+                    print('Name: ' + information.get(spreadsheet[0]).get('filename'))
+                else:
+                    print(f"Creating new {spreadsheet[1]} spreadsheet")
+                    copy_id = self.drive_service.copy(
+                        id=information.get(spreadsheet[0]).get('id'),
+                        parent=information.get('character_folder').get('id'),
+                        name=information.get(spreadsheet[0]).get('filename')
+                    )
+                    self.info.set(id, copy_id) 
+                    if self.is_verbose:
+                        print(f"New {spreadsheet[1]} Spreadsheet has ID = {self.info.get(id)}")
+            else:
+                print(f"Using existing {spreadsheet[1]} Spreadsheet with ID = {self.info.get(id)}")
 
     
     def update_spreadsheets(self) -> None:
+        if self.is_dry_run:
+            print("Dry Run: Updating spreadsheets with information and permissions.")
+        
         # Player can edit their player spreadsheet
         if self.is_verbose:
             print(f"Updating player spreadsheet with editor permissions for {self.info.email}")
@@ -124,9 +118,12 @@ class SheetController:
             print("Setting view/read permission to anyone on ST spreadsheet, player spreadsheet, character sheet.")
         
         if not self.is_dry_run:
-            self.drive_service.set_viewer_permissions(self.info.player_sheet_id)
-            self.drive_service.set_viewer_permissions(self.info.st_sheet_id)
-            self.drive_service.set_viewer_permissions(self.info.sheet_id)
+            for bit in ['player_', 'st_', '']:
+                id = self.info.get(f'{bit}sheet_id')
+                self.drive_service.set_viewer_permissions(id)
+                #self.drive_service.set_viewer_permissions(self.info.st_sheet_id)
+                #self.drive_service.set_viewer_permissions(self.info.player_sheet_id)
+                #self.drive_service.set_viewer_permissions(self.info.sheet_id)
 
         # Add a character row to the masterlist of character, below the prior character
         list_range, value_range = get_character_row(self.info.game, self.info.st_sheet_id)
@@ -230,9 +227,6 @@ class SheetController:
         
         self.create_spreadsheets(self.get_templates())
 
-        if self.is_dry_run:
-            print("Dry Run: Updating spreadsheets with information and permissions.")
-        
         self.update_spreadsheets()
 
         self.print_profile()
