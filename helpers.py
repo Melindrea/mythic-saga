@@ -33,7 +33,7 @@ def build_url(type: str, id: str, action: str = None) -> str:
     return f'https://drive.google.com/open?id={id}'
 
 
-def get_type_from_mimetype(type: str) -> str:
+def get_google_type_from_mimetype(type: str) -> str:
     mime_types = {
         'application/vnd.google-apps.audio': '',	
         'application/vnd.google-apps.document': 'document',
@@ -54,11 +54,11 @@ def get_type_from_mimetype(type: str) -> str:
         'application/vnd.google-apps.unknown': '',
         'application/vnd.google-apps.video': ''
     }
-    return mime_types.get(type)
+    return mime_types.get(type, '')
 
 
 def character_name_from_document(document: dict) -> str:
-    title = document.get('title')
+    title = document.get('title', '')
     title_chunks = title.split('/')
     
     return title_chunks[0].strip()
@@ -84,40 +84,42 @@ def get_character_row(game: str, st_sheet_id: str) -> tuple[str, dict]:
     games = list(map(lambda game: game.strip().lower(), os.environ.get('GAMES').split(',')))
     
     if game not in games:
-        print(f'Game {game} is not active.')
-        return None
+        raise ValueError(f'Game {game} is not active.')
+    
+    import_range = '=IMPORTRANGE(INDIRECT(CONCAT("F", ROW())), "Overview!'
     
     row = []
     for cell in ['B1', 'B3', 'E2', 'E3', 'B2', 'url', 'B5', 'C1', 'B7']:
         if cell == 'url':
             row.append(build_url('spreadsheets', st_sheet_id))
         else:
-            row.append(f'=IMPORTRANGE(INDIRECT(CONCAT("F", ROW())), "Overview!{cell}")')
+            row.append(f'{import_range}{cell}")')
 
     
     if game == 'scion':
-        list_range = 'Character list!A2:M'
-
+        lr_end = 'M'
+    
         for i in [2, 3, 4]:
-            row.append(f'=IMPORTRANGE(INDIRECT(CONCAT("F", ROW())), "Overview!Q{i}")')
+            row.append(f'{import_range}Q{i}")')
         
     elif game in ['exalted', 'modern']:
-        list_range = 'Character list!A2:I'
+        lr_end = 'I'
+    
+    else:
+        raise ValueError(f'No list_range associated with {game}.')
 
     # Values will be appended after the last row of the table.
     value_range_body = {
         'values': [ row ]
     }
-
+    list_range = f'Character list!A2:{lr_end}'
     return list_range, value_range_body
 
 
 def get_wiki_url(game: str, character_name: str) -> str:
-    if game == 'scion':
-        prefix = 'ScD'
-    elif game == 'exalted':
-        prefix = 'ExND'
-    elif game == 'modern':
-        prefix = 'ExM'
-        
-    return f'https://wiki.mythic-saga.com/view/{prefix}:{quote(character_name)}'
+    prefix = os.environ.get(f'{game.upper()}_WIKI_PREFIX')
+
+    if prefix:
+        return f'{os.environ.get('WIKI_URL')}/{prefix}:{quote(character_name)}'
+    
+    raise ValueError(f'Game {game} is not active.')

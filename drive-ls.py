@@ -10,7 +10,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv, find_dotenv
 
-from helpers import build_url, get_id_from_drive_url, get_type_from_mimetype
+from helpers import build_url, get_id_from_drive_url, get_google_type_from_mimetype
 from service import DriveService
 
 load_dotenv(find_dotenv())
@@ -39,7 +39,7 @@ if __name__=='__main__':
         return element[1]
     
     if args.build_url:
-        files = [(build_url(get_type_from_mimetype(n[2]), n[0], args.build_url), n[1]) for n in files]
+        files = [(build_url(get_google_type_from_mimetype(n[2]), n[0], args.build_url), n[1]) for n in files]
     
     files.sort(key=get_name)
     

@@ -10,8 +10,6 @@ from googleapiclient.errors import HttpError
 from helpers import get_id_from_drive_url
 
 
-
-
 @dataclass
 class DriveService:
     dir_path: Path
@@ -89,8 +87,6 @@ class DriveService:
 
         return self.set_permissions(id=file_id, new_permissions=new_permissions)
     
-
-
 
 @dataclass
 class SpreadSheetService:

@@ -49,10 +49,12 @@ class SheetInformation:
         return getattr(self, attr)
     
     def set(self, attr: str, value):
-        # Allows you to set the value of an attribute using variables
+        # Allows you to set the value of an attribute using 
+        getattr(self, attr) # Throws AttributeError if the attribute does not exist
+        
         setattr(self, attr, value)
 
-    def proper_sanctioned_date(self) -> bool:
+    def sanctioned_date_is_valid(self) -> bool:
         try:
             self.given_sanctioned_date
         except AttributeError:
@@ -80,10 +82,11 @@ class SheetInformation:
     def email_is_valid(self) -> bool:
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
         
-        return re.match(regex, self.email)
+        match = re.match(regex, self.email)
+        return match is not None
     
 
-    def valid_storyteller(self) -> bool:
+    def storyteller_is_valid(self) -> bool:
         if self.storyteller:
             return True
         

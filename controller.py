@@ -4,7 +4,7 @@ from pathlib import Path
 from classes import SheetInformation
 from helpers import build_url, character_name_from_document, get_character_row, get_wiki_url
 from service import DocumentService, DriveService, SpreadSheetService
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 @dataclass
 class SheetController:
@@ -121,9 +121,6 @@ class SheetController:
             for bit in ['player_', 'st_', '']:
                 id = self.info.get(f'{bit}sheet_id')
                 self.drive_service.set_viewer_permissions(id)
-                #self.drive_service.set_viewer_permissions(self.info.st_sheet_id)
-                #self.drive_service.set_viewer_permissions(self.info.player_sheet_id)
-                #self.drive_service.set_viewer_permissions(self.info.sheet_id)
 
         # Add a character row to the masterlist of character, below the prior character
         list_range, value_range = get_character_row(self.info.game, self.info.st_sheet_id)

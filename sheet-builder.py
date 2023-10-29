@@ -30,7 +30,7 @@ def validate_arguments(args: SheetInformation, override: bool = False) -> list[s
     
     errors = []
 
-    if not args.valid_storyteller():
+    if not args.storyteller_is_valid():
         errors.append(f"The ST needs to be named.")
 
     if not args.email_is_valid():
@@ -39,7 +39,7 @@ def validate_arguments(args: SheetInformation, override: bool = False) -> list[s
     if not args.callings_defined():
         errors.append("You need to add three Callings when creating a Scion.")
 
-    if not args.proper_sanctioned_date():
+    if not args.sanctioned_date_is_valid():
         errors.append(f"Invalid data format: {args.given_sanctioned_date}. For use with the -d or --given_sanctioned_date arguments, the usable formats are: 1/31/23, 01/31/23,  1/31/2023, 01/31/2023, or 2023-01-31")
 
     return errors
