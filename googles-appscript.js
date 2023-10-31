@@ -4,6 +4,6 @@ function getSheetUrl() {
   var url = '';
   url += SS.getUrl().replace('/edit', '');
   //url += '#gid=';
-  //url += ss.getSheetId(); 
+  //url += ss.getSheetId();
   return url;
 }

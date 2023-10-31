@@ -2,3 +2,5 @@
 pythonpath = [
   "."
 ]
+[tool.isort]
+profile = "black"
