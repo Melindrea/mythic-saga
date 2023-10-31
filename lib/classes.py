@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from helpers import get_valid_date
+from lib.helpers import get_valid_date
 
 @dataclass
 class SheetInformation:

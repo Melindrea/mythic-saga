@@ -10,8 +10,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv, find_dotenv
 
-from helpers import build_url, get_id_from_drive_url, get_google_type_from_mimetype
-from service import DriveService
+from lib.helpers import build_url, get_id_from_drive_url, get_google_type_from_mimetype
+from lib.googleAPI import DriveService
 
 load_dotenv(find_dotenv())
 VERSION = os.environ.get('VERSION')

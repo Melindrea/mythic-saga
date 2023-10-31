@@ -1,9 +1,9 @@
 import os
 
 from pathlib import Path
-from classes import SheetInformation
-from helpers import build_url, character_name_from_document, get_character_row, get_wiki_url
-from service import DocumentService, DriveService, SpreadSheetService
+from lib.classes import SheetInformation
+from lib.helpers import build_url, character_name_from_document, get_character_row, get_wiki_url
+from lib.googleAPI import DocumentService, DriveService, SpreadSheetService
 from dataclasses import dataclass
 
 @dataclass
@@ -13,6 +13,8 @@ class SheetController:
     drive_service: DriveService = None
     spreadsheet_service: SpreadSheetService = None
     dir_path: Path = Path.cwd()
+    input_path: Path = None
+    output_path: Path = None
     is_verbose: bool = False
     is_dry_run: bool = False
     profile_filename: str = 'discord.txt'
@@ -25,7 +27,15 @@ class SheetController:
         if self.spreadsheet_service is None:
             self.spreadsheet_service = SpreadSheetService(dir_path=self.dir_path)
 
-    
+        if self.output_path is None:
+            self.output_path = self.dir_path / 'output'
+
+        if self.input_path is None:
+            self.input_path = self.dir_path / 'input'
+
+    def get_profile_filename(self) -> Path:
+        return self.output_path / self.profile_filename
+
     def gather_information(self):
         self.info.masterlist_id = os.environ.get(f"{self.info.game.upper()}_LIST_ID")
         self.info.masterlist_url = build_url('spreadsheets', self.info.masterlist_id)
@@ -185,8 +195,9 @@ class SheetController:
 
 
     def print_profile(self) -> None:
+        profile_filename = self.get_profile_filename()
         if self.is_verbose:
-            print(f"Printing profile information to {self.profile_filename}.")
+            print(f"Printing profile information to {profile_filename}.")
         
         lines = [
             '## QUICK LINKS',
@@ -215,7 +226,7 @@ class SheetController:
             print('\n'.join(lines))
         
         else:
-            with open(self.profile_filename, 'w') as f:
+            with open(profile_filename, 'w') as f:
                 print('\n'.join(lines), file=f)
 
 

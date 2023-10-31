@@ -4,7 +4,6 @@ token.json
 .vscode
 __pycache__
 .env
-discord.txt
-template-links.txt
-char_list.csv
 __testing.py
+output/*
+input/*

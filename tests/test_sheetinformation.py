@@ -1,6 +1,6 @@
 from datetime import datetime
 import pytest
-from classes import SheetInformation
+from lib.classes import SheetInformation
 
 class TestSheetInformation:
     

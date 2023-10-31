@@ -7,7 +7,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError
 
-from helpers import get_id_from_drive_url
+from lib.helpers import get_id_from_drive_url
 
 
 @dataclass

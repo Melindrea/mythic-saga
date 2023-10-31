@@ -14,10 +14,10 @@ from dotenv import load_dotenv, find_dotenv
 
 from argparse import ArgumentParser
 
-from classes import SheetInformation
-from controller import SheetController
-import arg_parser
-from helpers import get_valid_date, trim_and_split_string
+from lib.classes import SheetInformation
+from lib.controller import SheetController
+from lib.cli.arguments import core, cli, file
+from lib.helpers import get_valid_date, trim_and_split_string
 
 load_dotenv(find_dotenv())
 VERSION = os.environ.get('VERSION')
@@ -102,15 +102,15 @@ def file_func(parser: ArgumentParser) -> None:
 
 
 def main():
-    parser = arg_parser.main(VERSION)
+    parser = core(VERSION)
 
     subparsers = parser.add_subparsers(help='{sub-command} --help')
 
     # create the parser for the "cli" command
-    arg_parser.cli(subparsers, cli_func, GAMES)
+    cli(subparsers, cli_func, GAMES)
 
     # Create the parser for the "file" command
-    arg_parser.file(subparsers, file_func, GAMES)
+    file(subparsers, file_func, GAMES)
 
     args = parser.parse_args()
     args.func(parser)

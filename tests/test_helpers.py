@@ -1,7 +1,7 @@
 import os
 
 import pytest
-import helpers
+import lib.helpers
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
@@ -10,29 +10,29 @@ load_dotenv(find_dotenv())
 def test_get_valid_date__formats():
         # '%m/%d/%y'
         given_date = '1/13/23'
-        assert helpers.get_valid_date(given_date), "Format: 1/13/23 should be valid"
+        assert lib.helpers.get_valid_date(given_date), "Format: 1/13/23 should be valid"
 
         given_date = '01/13/23'
-        assert helpers.get_valid_date(given_date), "Format: 01/13/23 should be valid"
+        assert lib.helpers.get_valid_date(given_date), "Format: 01/13/23 should be valid"
 
         # '%m/%d/%Y'
         given_date = '01/13/2023'
-        assert helpers.get_valid_date(given_date), "Format: 01/13/2023 should be valid"
+        assert lib.helpers.get_valid_date(given_date), "Format: 01/13/2023 should be valid"
 
         given_date = '1/13/2023'
-        assert helpers.get_valid_date(given_date), "Format: 1/13/2023 should be valid"
+        assert lib.helpers.get_valid_date(given_date), "Format: 1/13/2023 should be valid"
         
         # '%Y-%m-%d'
         given_date = '2023-01-13'
-        assert helpers.get_valid_date(given_date), "Format: 2023-01-13 should be valid"
+        assert lib.helpers.get_valid_date(given_date), "Format: 2023-01-13 should be valid"
 
         given_date = '23-01-13' # Invalid date
-        assert helpers.get_valid_date(given_date) is None, "Format 23-01-13 should be invalid"
+        assert lib.helpers.get_valid_date(given_date) is None, "Format 23-01-13 should be invalid"
 
 
 def test_trim_and_split_string():
     test_string = 'word1,word2   , word3 word4' # Badly formatted but should be correctly split
-    assert helpers.trim_and_split_string(test_string) == ['word1', 'word2', 'word3', 'word4']
+    assert lib.helpers.trim_and_split_string(test_string) == ['word1', 'word2', 'word3', 'word4']
 
 
 def test_build_url():
@@ -40,42 +40,42 @@ def test_build_url():
     id = 'NotRandomGoogleDocID'
     # Spreadsheet, no action
     type = 'spreadsheets'
-    assert helpers.build_url(type, id) == 'https://docs.google.com/spreadsheets/d/NotRandomGoogleDocID'
+    assert lib.helpers.build_url(type, id) == 'https://docs.google.com/spreadsheets/d/NotRandomGoogleDocID'
     # With action edit
     action = 'edit'
-    assert helpers.build_url(type, id, action) == 'https://docs.google.com/spreadsheets/d/NotRandomGoogleDocID/edit'
+    assert lib.helpers.build_url(type, id, action) == 'https://docs.google.com/spreadsheets/d/NotRandomGoogleDocID/edit'
 
     # Document, no action
     type = 'document'
-    assert helpers.build_url(type, id) == 'https://docs.google.com/document/d/NotRandomGoogleDocID'
+    assert lib.helpers.build_url(type, id) == 'https://docs.google.com/document/d/NotRandomGoogleDocID'
     # With action edit
     action = 'edit'
-    assert helpers.build_url(type, id, action) == 'https://docs.google.com/document/d/NotRandomGoogleDocID/edit'
+    assert lib.helpers.build_url(type, id, action) == 'https://docs.google.com/document/d/NotRandomGoogleDocID/edit'
 
     # Slide, no action
     type = 'slide'
-    assert helpers.build_url(type, id) == 'https://docs.google.com/slide/d/NotRandomGoogleDocID'
+    assert lib.helpers.build_url(type, id) == 'https://docs.google.com/slide/d/NotRandomGoogleDocID'
     # With action edit
     action = 'edit'
-    assert helpers.build_url(type, id, action) == 'https://docs.google.com/slide/d/NotRandomGoogleDocID/edit'
+    assert lib.helpers.build_url(type, id, action) == 'https://docs.google.com/slide/d/NotRandomGoogleDocID/edit'
 
     # Unknown type
     type = 'Unknown'
-    assert helpers.build_url(type, id, action) == 'https://drive.google.com/open?id=NotRandomGoogleDocID'
+    assert lib.helpers.build_url(type, id, action) == 'https://drive.google.com/open?id=NotRandomGoogleDocID'
 
 
 def test_get_google_type_from_mimetype():
     #'application/vnd.google-apps.document': 'document',
-    assert helpers.get_google_type_from_mimetype('application/vnd.google-apps.document') == 'document'
+    assert lib.helpers.get_google_type_from_mimetype('application/vnd.google-apps.document') == 'document'
     #'application/vnd.google-apps.file': 'file',
-    assert helpers.get_google_type_from_mimetype('application/vnd.google-apps.file') == 'file'
+    assert lib.helpers.get_google_type_from_mimetype('application/vnd.google-apps.file') == 'file'
     #'application/vnd.google-apps.folder': '',
-    assert helpers.get_google_type_from_mimetype('application/vnd.google-apps.folder') == ''
+    assert lib.helpers.get_google_type_from_mimetype('application/vnd.google-apps.folder') == ''
     #'application/vnd.google-apps.presentation': 'slide',
-    assert helpers.get_google_type_from_mimetype('application/vnd.google-apps.presentation') == 'slide'
+    assert lib.helpers.get_google_type_from_mimetype('application/vnd.google-apps.presentation') == 'slide'
     #'application/vnd.google-apps.spreadsheet': 'spreadsheets',
-    assert helpers.get_google_type_from_mimetype('application/vnd.google-apps.spreadsheet') == 'spreadsheets'
-    assert helpers.get_google_type_from_mimetype('Not/Applicable') == ''
+    assert lib.helpers.get_google_type_from_mimetype('application/vnd.google-apps.spreadsheet') == 'spreadsheets'
+    assert lib.helpers.get_google_type_from_mimetype('Not/Applicable') == ''
 
 
 def test_character_name_from_document():
@@ -84,24 +84,24 @@ def test_character_name_from_document():
     }
     
     # Document with a properly formatted title
-    assert helpers.character_name_from_document(mock_document) == 'Name'
+    assert lib.helpers.character_name_from_document(mock_document) == 'Name'
 
     mock_document = {
         'title': 'Invalid Name, Splat'
     }
     
     # Document with a badly formatted title
-    assert helpers.character_name_from_document(mock_document) == 'Invalid Name, Splat'
+    assert lib.helpers.character_name_from_document(mock_document) == 'Invalid Name, Splat'
 
     # Document without a title
-    assert helpers.character_name_from_document({}) == ''
+    assert lib.helpers.character_name_from_document({}) == ''
 
 
 def test_get_id_from_drive_url():
     # https://drive.google.com/open?id=FakeGoogleDocID
-    assert helpers.get_id_from_drive_url('https://drive.google.com/open?id=FakeGoogleDocID') == 'FakeGoogleDocID'
+    assert lib.helpers.get_id_from_drive_url('https://drive.google.com/open?id=FakeGoogleDocID') == 'FakeGoogleDocID'
     # https://drive.google.com/drive/folders/FakeGoogleDocID?usp=drive_link
-    assert helpers.get_id_from_drive_url('https://drive.google.com/drive/folders/FakeGoogleDocID?usp=drive_link') == 'FakeGoogleDocID'
+    assert lib.helpers.get_id_from_drive_url('https://drive.google.com/drive/folders/FakeGoogleDocID?usp=drive_link') == 'FakeGoogleDocID'
     
 
 def test_get_wiki_url():
@@ -109,12 +109,12 @@ def test_get_wiki_url():
     character_name = 'Some Fake Scion'
 
     # Existing game
-    assert helpers.get_wiki_url(game, character_name) == 'https://wiki.mythic-saga.com/view/ScD:Some%20Fake%20Scion'
+    assert lib.helpers.get_wiki_url(game, character_name) == 'https://wiki.mythic-saga.com/view/ScD:Some%20Fake%20Scion'
 
     # Non-existing game
     game = 'foo'
     with pytest.raises(ValueError):
-        helpers.get_wiki_url(game, character_name)
+        lib.helpers.get_wiki_url(game, character_name)
 
 
 def test_get_character_row():
@@ -123,10 +123,10 @@ def test_get_character_row():
     # Game does not exist
     game = 'foo'
     with pytest.raises(ValueError):
-        helpers.get_character_row(game, st_sheet_id)
+        lib.helpers.get_character_row(game, st_sheet_id)
 
     game = 'scion'
-    actual_list_range, actual_value_range_body = helpers.get_character_row(game, st_sheet_id)
+    actual_list_range, actual_value_range_body = lib.helpers.get_character_row(game, st_sheet_id)
     assert actual_list_range == 'Character list!A2:M'
     cols = actual_value_range_body.get('values')[0]
     assert len(cols) == 12
@@ -137,7 +137,7 @@ def test_get_character_row():
             assert col == 'https://docs.google.com/spreadsheets/d/FakeGoogleSheetID'
 
     game = 'exalted'
-    actual_list_range, actual_value_range_body = helpers.get_character_row(game, st_sheet_id)
+    actual_list_range, actual_value_range_body = lib.helpers.get_character_row(game, st_sheet_id)
     assert actual_list_range == 'Character list!A2:I'
     cols = actual_value_range_body.get('values')[0]
     assert len(cols) == 9

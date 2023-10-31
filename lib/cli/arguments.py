@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from typing import Callable
 
 
-def main(version: str) -> ArgumentParser:
+def core(version: str) -> ArgumentParser:
     parser = ArgumentParser(
         prog="SheetBuilder",
         description="A script that creates spreadsheets and new lines in existing spreadsheets after sanctioning of a character in Mythic Saga."
