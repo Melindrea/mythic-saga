@@ -7,3 +7,4 @@ __pycache__
 __testing.py
 output/*
 input/*
+.pytest_cache
