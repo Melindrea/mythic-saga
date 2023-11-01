@@ -87,13 +87,13 @@ class SheetController:
         spreadsheets = [("st", "ST"), ("player", "Player")]
 
         for spreadsheet in spreadsheets:
-            id = f"{spreadsheet[0]}_sheet_id"
-            id_value = self.info.get(id)
+            id_var_name = f"{spreadsheet[0]}_sheet_id"
+            id_value = self.info.get(id_var_name)
 
             if id_value is None:
                 if self.is_dry_run:
                     print(f"Dry Run: Creating new {spreadsheet[1]} spreadsheet")
-                    self.info.set(id, f"DryRun{spreadsheet[0]}ID")
+                    self.info.set(id_var_name, f"DryRun{spreadsheet[0]}ID")
                     print("ID: " + information.get(spreadsheet[0]).get("id"))
                     print("Parent: " + information.get("character_folder").get("id"))
                     print("Name: " + information.get(spreadsheet[0]).get("filename"))
@@ -104,17 +104,24 @@ class SheetController:
                         parent=information.get("character_folder").get("id"),
                         name=information.get(spreadsheet[0]).get("filename"),
                     )
-                    self.info.set(id, copy_id)
+                    self.info.set(id_var_name, copy_id)
+
                     if self.is_verbose:
                         print(
-                            f"New {spreadsheet[1]} Spreadsheet has ID = {self.info.get(id)}"
+                            f"New {spreadsheet[1]} Spreadsheet has ID = {self.info.get(id_var_name)}"
                         )
             else:
                 print(
-                    f"Using existing {spreadsheet[1]} Spreadsheet with ID = {self.info.get(id)}"
+                    f"Using existing {spreadsheet[1]} Spreadsheet with ID = {self.info.get(id_var_name)}"
                 )
 
+            # Set the URL based on the ID
+            id_value = self.info.get(id_var_name)
+            url = build_url("spreadsheets", id_value)
+            self.info.set(f"{spreadsheet[0]}_sheet_url", url)
+
     def update_spreadsheets(self) -> None:
+        print(self.info)
         if self.is_dry_run:
             print("Dry Run: Updating spreadsheets with information and permissions.")
 
