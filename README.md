@@ -15,3 +15,9 @@ You need to start by running the cells associated with Imports and Functions, th
 Only two of the steps/cells affect files, namely Step 2 and Step 3, with the other cells either setting up things for later ones, or printing out things you need for manual steps.
 
 The only cell you should need to change is Step 1: Editable variables, with the rest of the things hopefully working as it should.
+
+## Examples
+* Dry run with input file: `python sanction.py -dr -v file input/char_list.csv -st Marie`
+* Dry run with cli scion character: `python sanction.py -v -dr cli scion -sh 1PwInljF0L67lxWz3VLLSfB7TEmYchsEvnfV0azAeh4o  -st Marie -e marie.hogebrandt@gmail.com -c Creator Monster Sage`
+* Get list of files (from Charles' PDF folder): `python drive-ls.py https://drive.google.com/drive/folders/1omckCZDwnXx3ivYiSx55hIU6EoBPpX3s -b view -m -f output/template-links.txt`
+* Run the pre-commit scripts in case the pre-commit hook breaks: `pre-commit run --all-files`

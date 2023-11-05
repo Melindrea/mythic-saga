@@ -2,14 +2,19 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from lib.classes import SheetInformation
-from lib.googleAPI import DocumentService, DriveService, SpreadSheetService
-from lib.helpers import (
+from .classes import SheetInformation
+from .googleAPI import DocumentService, DriveService, SpreadSheetService
+from .helpers import (
     build_url,
     character_name_from_document,
     get_character_row,
     get_wiki_url,
 )
+
+
+def sheet_factory(kwargs: dict) -> SheetInformation:
+    sh = SheetInformation(**kwargs)
+    return sh
 
 
 @dataclass

@@ -10,8 +10,12 @@ from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 
-from lib.googleAPI import DriveService
-from lib.helpers import build_url, get_google_type_from_mimetype, get_id_from_drive_url
+from mythicsaga.sheets.googleAPI import DriveService
+from mythicsaga.sheets.helpers import (
+    build_url,
+    get_google_type_from_mimetype,
+    get_id_from_drive_url,
+)
 
 load_dotenv(find_dotenv())
 VERSION = os.environ.get("VERSION")

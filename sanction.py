@@ -13,10 +13,24 @@ from datetime import datetime
 
 from dotenv import find_dotenv, load_dotenv
 
-from lib.classes import SheetInformation
-from lib.cli.arguments import cli, core, file
-from lib.controller import SheetController
-from lib.helpers import get_valid_date, trim_and_split_string
+from arguments import cli, core, file
+from mythicsaga.sheets.controller import SheetController, sheet_factory
+from mythicsaga.sheets.helpers import get_valid_date, trim_and_split_string
+
+
+class SheetInformation:
+    def storyteller_is_valid(self) -> bool:
+        pass
+
+    def email_is_valid(self) -> bool:
+        pass
+
+    def callings_defined(self) -> bool:
+        pass
+
+    def sanctioned_date_is_valid(self) -> bool:
+        pass
+
 
 load_dotenv(find_dotenv())
 VERSION = os.environ.get("VERSION")
@@ -57,7 +71,7 @@ def create_connection(
 
 
 def cli_func(parser: ArgumentParser) -> None:
-    sh = SheetInformation()
+    sh = sheet_factory()
     parser.parse_args(namespace=sh)
 
     errors = validate_arguments(sh, sh.override)
@@ -104,14 +118,17 @@ def file_func(parser: ArgumentParser) -> None:
             if row["callings"]:
                 callings = trim_and_split_string(row["callings"])
 
-            character = SheetInformation(
-                sanction_date=sanction_date,
-                storyteller=storyteller,
-                game=row["game"].strip().lower(),
-                sheet_id=row["sheet_id"].strip(),
-                email=row["email"].strip().lower(),
-                callings=callings,
+            character = sheet_factory(
+                {
+                    "sanction_date": sanction_date,
+                    "storyteller": storyteller,
+                    "game": row["game"].strip().lower(),
+                    "sheet_id": row["sheet_id"].strip(),
+                    "email": row["email"].strip().lower(),
+                    "callings": callings,
+                }
             )
+
             errors = validate_arguments(character, args.override)
             if errors:
                 sheet_id = row["sheet_id"]

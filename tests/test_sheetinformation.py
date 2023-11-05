@@ -1,8 +1,7 @@
 from datetime import datetime
 
 import pytest
-
-from lib.classes import SheetInformation
+from sheets.classes import SheetInformation
 
 
 class TestSheetInformation:
