@@ -12,8 +12,11 @@ from .helpers import (
 )
 
 
-def sheet_factory(kwargs: dict) -> SheetInformation:
-    sh = SheetInformation(**kwargs)
+def sheet_factory(kwargs: dict = None) -> SheetInformation:
+    if kwargs:
+        sh = SheetInformation(**kwargs)
+    else:
+        sh = SheetInformation()
     return sh
 
 

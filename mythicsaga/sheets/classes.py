@@ -36,11 +36,12 @@ class SheetInformation:
             f"Name = {self.name}",
             f"Storyteller = {self.storyteller}",
             f"Email = {self.email}",
-            f"Callings = {', '.join(self.callings)}",
             f"Sanctioning Date = {self.get_formatted_sanction_date()}",
             f"Game Masterlist ID = {self.masterlist_id}",
             f"Game Masterlist URL = {self.masterlist_url}",
         ]
+        if self.callings:
+            lines.append(f"Callings = {', '.join(self.callings)}")
         if self.st_sheet_id:
             lines.append(f"ST Spreadsheet ID = {self.st_sheet_id}")
 

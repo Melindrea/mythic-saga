@@ -21,3 +21,9 @@ The only cell you should need to change is Step 1: Editable variables, with the 
 * Dry run with cli scion character: `python sanction.py -v -dr cli scion -sh 1PwInljF0L67lxWz3VLLSfB7TEmYchsEvnfV0azAeh4o  -st Marie -e marie.hogebrandt@gmail.com -c Creator Monster Sage`
 * Get list of files (from Charles' PDF folder): `python drive-ls.py https://drive.google.com/drive/folders/1omckCZDwnXx3ivYiSx55hIU6EoBPpX3s -b view -m -f output/template-links.txt`
 * Run the pre-commit scripts in case the pre-commit hook breaks: `pre-commit run --all-files`
+
+## File format
+- A text file (or csv) with semicolon-separated rows
+- GAME (lowercase);GOOGLE_SHEET_ID; PLAYER_EMAIL; SANCTION_DATE (can be blank); SANCTION_ST (can be blank); CALLINGS (blank if not Scion)
+- If SANCTION_DATE is blank and -d is a valid date, it uses that. If -d is not set it uses current date
+- If -st is set and SANCTION_ST is set, it chooses the file over the flag
